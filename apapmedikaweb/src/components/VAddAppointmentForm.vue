@@ -3,9 +3,10 @@ import VInput from '@/components/VInput.vue';
 import VSelect from '@/components/VSelect.vue';
 import VButton from '@/components/VButton.vue';
 import VTextArea from '@/components/VTextArea.vue';
-import type { AppointmentRequestInterface } from '@/interfaces/appointment.interface';
+import type { AppointmentRequestInterface } from '@/interface/appointment.interface';
+import type { PatientOptionInterface } from '@/interface/patient.interface';
 import { onMounted, type PropType, ref, toRefs, watch } from 'vue';
-import type { CommonResponseInterface } from '@/interfaces/common.interface';
+import type { CommonResponseInterface } from '@/interface/common.interface';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -31,21 +32,38 @@ watch(() => model, (newValue) => {
 
 const handleSubmit = async () => await props.action(model.value);
 
-// const developerOptions = ref([] as DeveloperOptionInterface[]);
-//
-// const getDevelopers = async () => {
-//   const response = await fetch('http://localhost:8080/api/developer/viewall');
-//   const data: CommonResponseInterface<DeveloperOptionInterface[]> = await response.json();
-//   developerOptions.value = data.data;
-// }
-//
-// onMounted(getDevelopers);
+const patientOptions = ref([] as PatientOptionInterface[]);
+
+const getPatient = async () => {
+  const response = await fetch('http://localhost:8084/api/patient/viewall');
+  const data: CommonResponseInterface<PatientOptionInterface[]> = await response.json();
+  patientOptions.value = data.data;
+  console.log(patientOptions)
+}
+
+watch(
+  () => model.value.patientId,
+  (newPatientId) => {
+    selectedPatientDetails.value = patientOptions.value.find((patient) => patient.id === newPatientId) || null;
+  }
+);
+
+onMounted(getPatient);
 
 </script>
 
 <template>
   <form @submit.prevent="handleSubmit" class="flex flex-col gap-2 py-2">
-    <VInput id="name" name="name" label="Nama Proyek" v-model="model.nama" />
+    <div class="flex w-full justify-between gap-2">
+      <VSelect id="patient" name="patient" label="Patient" v-model="model.nik">
+        <option value="">Pilih Pasien</option>
+        <option v-for="patient in patientOptions" :key="patient.id" :value="patient.id">
+          {{ patient.nik }} - {{ patient.name }}
+        </option>
+      </VSelect>
+    </div>
+
+    <VInput id="name" name="name" label="Nama Pasien" v-model="model.nama" />
     <VTextArea id="description" name="description" label="Deskripsi" v-model="model.deskripsi" />
 
     <div class="flex w-full justify-between gap-2">

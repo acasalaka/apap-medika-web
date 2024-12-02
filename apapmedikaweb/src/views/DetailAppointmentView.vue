@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { useProjectStore } from '@/stores/project';
+import { useAppointmentStore } from '@/stores/appointment';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import type { ProjectInterface } from '@/interfaces/project.interface';
+import type { AppointmentInterface } from '@/interface/appointment.interface';
 import { format } from 'date-fns';
 import VButton from '@/components/VButton.vue';
 
 const router = useRouter();
 const route = useRoute();
-const { id: projectId } = route.params;
+const { id: appointmentId } = route.params;
 
-const projectStore = useProjectStore();
-const project = ref(undefined as undefined | ProjectInterface);
+const appointmentStore = useAppointmentStore();
+const appointment = ref(undefined as undefined | AppointmentInterface);
 
-const getProject = async () => {
-  project.value = await projectStore.getProjectDetail(projectId as string);
+const getAppointment = async () => {
+  appointment.value = await appointmentStore.getAppointmentDetail(appointmentId as string);
 }
 
-onMounted(getProject);
+onMounted(getAppointment);
 </script>
 
 <template>
@@ -29,41 +29,41 @@ onMounted(getProject);
       <div class="flex flex-col gap-2 py-4">
         <div class="flex flex-col gap-1 w-full">
           <span>Nama Proyek</span>
-          <span class="text-xl font-bold">{{ project?.nama }}</span>
+          <span class="text-xl font-bold">{{ appointment?.nama }}</span>
         </div>
         <div class="flex flex-col gap-1 w-full">
           <span>Deskripsi</span>
-          <span class="text-xl font-bold">{{ project?.deskripsi }}</span>
+          <span class="text-xl font-bold">{{ appointment?.deskripsi }}</span>
         </div>
         <div class="flex gap-12 w-full">
           <div class="flex flex-col gap-1 w-1/3">
             <span>Tanggal Mulai</span>
             <span class="text-xl font-bold">
-              {{ project ? format(new Date(project.tanggalMulai), 'EEEE, dd MMMM yyyy') : "-" }}
+              {{ appointment ? format(new Date(appointment.tanggalMulai), 'EEEE, dd MMMM yyyy') : "-" }}
             </span>
           </div>
           <div class="flex flex-col gap-1 w-1/3">
             <span>Tanggal Selesai</span>
             <span class="text-xl font-bold">
-              {{ project ? format(new Date(project.tanggalSelesai), 'EEEE, dd MMMM yyyy') : "-" }}
+              {{ appointment ? format(new Date(appointment.tanggalSelesai), 'EEEE, dd MMMM yyyy') : "-" }}
             </span>
           </div>
         </div>
         <div class="flex gap-12 w-full">
           <div class="flex flex-col gap-1 w-1/3">
             <span>Status</span>
-            <span class="text-xl font-bold">{{ project?.status }}</span>
+            <span class="text-xl font-bold">{{ appointment?.status }}</span>
           </div>
           <div class="flex flex-col gap-1 w-1/3">
             <span>Developer</span>
-            <span class="text-xl font-bold">{{ project?.developer.nama }}</span>
+<!--            <span class="text-xl font-bold">{{ appointment?.developer.nama }}</span>-->
           </div>
         </div>
       </div>
       <!-- Button Section -->
       <div class="flex gap-2 py-2">
         <VButton @click="router.back()" class="bg-slate-600 hover:bg-slate-800 text-white">Kembali</VButton>
-        <RouterLink :to="`/proyek/${projectId}/edit`" class="w-full">
+        <RouterLink :to="`/appointment/${appointmentId}/edit`" class="w-full">
           <VButton class="bg-amber-600 hover:bg-amber-800 text-white">Edit</VButton>
         </RouterLink>
       </div>

@@ -1,14 +1,20 @@
-export interface DeveloperInterface {
-    id: number,
-    nama: string,
-    alamat: string,
+export interface PatientInterface {
+    id: string,
+    name: string,
+    username: string,
+    password: string,
     email: string,
-    tanggalBerdiri: Date,
+    gender: string,
     createdAt: Date,
     updatedAt: Date,
+    isDeleted: boolean,
+    nik: string,
+    birthPlace: string,
+    birthDate: Date,
+    pClass: number
 }
 
-export interface DeveloperOptionInterface {
-  id: number,
-  nama: string,
+export interface PatientOptionInterface {
+  nik: string,
+  name: string,
 }

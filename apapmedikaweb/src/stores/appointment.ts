@@ -1,63 +1,64 @@
 import { defineStore } from 'pinia';
-import type { ProjectInterface, ProjectRequestInterface } from '@/interfaces/project.interface';
+import type { AppointmentInterface, AppointmentRequestInterface } from '@/interfaces/appointment.interface';
 import { useToast } from 'vue-toastification';
 import router from "@/router";
 
-export const useProjectStore = defineStore('project', {
+export const useAppointmentStore = defineStore('appointment', {
   state: () => ({
-    projects: [] as ProjectInterface[],
+    appointments: [] as AppointmentInterface[],
     loading: false,
     error: null as null | string,
   }),
   actions: {
-    async getProjects() {
+    async getAppointments() {
       this.loading = true;
       this.error = null;
 
       try {
-        const response = await fetch('http://localhost:8080/api/proyek/viewall');
-        const data: CommonResponseInterface<ProjectInterface[]> = await response.json();
-        this.projects = data.data;
+        const response = await fetch('http://localhost:8081/api/appointment/viewall');
+        const data: CommonResponseInterface<AppointmentInterface[]> = await response.json();
+        this.appointments = data.data;
+        console.log(this.appointments)
       } catch (err) {
-        this.error = `Gagal mengambil proyek ${err}`;
+        this.error = `Gagal mengambil appointment. ${err}`;
       } finally {
         this.loading = false;
       }
     },
 
-    async addProject(body: ProjectRequestInterface) {
+    async addAppointment(body: AppointmentRequestInterface) {
       this.loading = true;
       this.error = null;
 
       try {
-        const response = await fetch('http://localhost:8080/api/proyek/add', {
+        const response = await fetch('http://localhost:8081/api/appointment/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
         })
 
-        const data: CommonResponseInterface<ProjectInterface> = await response.json()
+        const data: CommonResponseInterface<AppointmentInterface> = await response.json()
         console.log("isi data" + data)
         this.projects.push(data.data)
 
-        useToast().success("Sukses menambahkan proyek")
-        await router.push("/proyek")
+        useToast().success("Sukses menambahkan appointment")
+        await router.push("/appointment")
         console.log("test2")
       } catch (err) {
-        this.error = `Gagal menambah proyek ${(err as Error).message}`
+        this.error = `Gagal menambah appointment ${(err as Error).message}`
         useToast().error(this.error)
       } finally {
         this.loading = false
       }
     },
 
-    async updateProject(id: string, body: ProjectRequestInterface) {
+    async updateAppointmentStatus(id: string, body: AppointmentRequestInterface) {
       this.loading = true;
       this.error = null;
 
       try {
         const response = await fetch(
-          'http://localhost:8080/api/proyek/update',
+          'http://localhost:8081/api/appointment/update-status',
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -65,40 +66,40 @@ export const useProjectStore = defineStore('project', {
           }
         )
 
-        const data: CommonResponseInterface<ProjectInterface> = await response.json();
-        this.projects.push(data.data)
+        const data: CommonResponseInterface<AppointmentInterface> = await response.json();
+        this.appointments.push(data.data)
 
-        useToast().success("Sukses mengubah proyek")
-        await router.push("/proyek")
+        useToast().success("Sukses mengubah status appointment")
+        await router.push("/appointment")
       } catch (err) {
-        this.error = `Gagal mengubah proyek ${(err as Error).message}`
+        this.error = `Gagal mengubah appointment ${(err as Error).message}`
         useToast().error(this.error)
       } finally {
         this.loading = false
       }
     },
 
-    async getProjectDetail(id: string): Promise<ProjectInterface | undefined> {
+    async getAppointmentDetail(id: string): Promise<AppointmentInterface | undefined> {
       this.loading = true;
       this.error = null;
 
       try {
-        const response: Response = await fetch(`http://localhost:8080/api/proyek/${id}`);
-        const data: CommonResponseInterface<ProjectInterface> = await response.json();
+        const response: Response = await fetch(`http://localhost:8081/api/appointment?id=${id}`);
+        const data: CommonResponseInterface<AppointmentInterface> = await response.json();
         return data.data;
       } catch (err) {
-        this.error = `Gagal mengambil proyek ${err}`;
+        this.error = `Gagal mengambil appointment ${err}`;
       } finally {
         this.loading = false;
       }
     },
-    async deleteProject(id: string): Promise<void> {
+    async deleteAppointment(id: string): Promise<void> {
       this.loading = true;
       this.error = null;
 
       try {
         const response: Response = await fetch(
-          `http://localhost:8080/api/proyek/${id}/delete`,
+          `http://localhost:8081/api/appointment/${id}/delete`,
           {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
@@ -106,16 +107,16 @@ export const useProjectStore = defineStore('project', {
         );
 
         if (response.ok) {
-          this.projects = this.projects.filter(
-            (project: ProjectInterface) => project.id !== id
+          this.appointments = this.appointments.filter(
+            (appointment: AppointmentInterface) => appointment.id !== id
           );
 
-          useToast().success("Sukses menghapus proyek");
+          useToast().success("Sukses menghapus appointment");
           window.location.reload();
         }
       } catch (err) {
-        this.error = `Gagal menghapus proyek ${(err as Error).message}`;
-        useToast().error(this.error);
+        this.error = `Gagal menghapus appointment ${(err as Error).message}`;
+        useToast().error(this.error)
       } finally {
         this.loading = false;
       }

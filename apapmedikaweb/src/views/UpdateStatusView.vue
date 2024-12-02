@@ -1,43 +1,37 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue';
-import { useProjectStore } from '@/stores/project';
-import VProyekForm from '@/components/VProyekForm.vue';
-import type { ProjectRequestInterface } from '@/interfaces/project.interface';
+import { useAppointmentStore } from '@/stores/appointment';
+import VProyekForm from '@/components/VAddAppointmentForm.vue';
+import type { AppointmentRequestInterface } from '@/interfaces/appointment.interface';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const { id: projectId } = route.params;
+const { id: appointmentId } = route.params;
 
-const projectStore = useProjectStore();
+const appointmentStore = useAppointmentStore();
 
-const projectModel = reactive({
-  nama: "",
-  deskripsi: "",
-  tanggalMulai: "",
-  tanggalSelesai: "",
-  status: "",
-  developer: ""
+const appointmentModel = reactive({
+  idDoctor: "",
+  idPatient: "",
+  date: "",
 });
 
-const updateProject = async (bodyRequest: ProjectRequestInterface) =>
-  await projectStore.updateProject(projectId as string, bodyRequest);
+const updateAppointment = async (bodyRequest: AppointmentRequestInterface) =>
+  await appointmentStore.updateAppointment(appointmentId as string, bodyRequest);
 
-const getProject = async () => {
-  if (typeof projectId === 'string') {
-    const project = await projectStore.getProjectDetail(projectId);
+const getAppointment = async () => {
+  if (typeof appointmentId === 'string') {
+    const appointment = await appointmentStore.getAppointmentDetail(appointmentId);
 
-    if (project) {
-      projectModel.nama = project.nama;
-      projectModel.deskripsi = project.deskripsi;
-      projectModel.status = project.status;
-      projectModel.tanggalMulai = project.tanggalMulai;
-      projectModel.tanggalSelesai = project.tanggalSelesai;
-      projectModel.developer = project.developer.id.toString();
+    if (appointment) {
+      appointmentModel.idDoctor = appointment.idDoctor;
+      appointmentModel.idPatient = appointment.idPatient;
+      appointmentModel.date = appointment.date;
     }
   }
 }
 
-onMounted(getProject);
+onMounted(getAppointment);
 </script>
 <template>
   <main class="w-full h-screen flex justify-center items-center bg-gray-400/30">
@@ -45,7 +39,7 @@ onMounted(getProject);
       <div class="w-full flex justify-between">
         <h1 class="text-green-600 font-bold text-xl">Ubah Proyek</h1>
       </div>
-      <VProyekForm :projectModel="projectModel" :action="updateProject" />
+      <VProyekForm :appointmentModel="appointmentModel" :action="updateAppointment" />
     </div>
   </main>
 </template>

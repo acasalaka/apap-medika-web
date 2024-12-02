@@ -1,22 +1,22 @@
 <script setup lang="ts">
 
 import VButton from '@/components/VButton.vue'
-import { useProjectStore } from '@/stores/project'
+import { useAppointmentStore } from '@/stores/appointment'
 
-const projectStore = useProjectStore()
+const appointmentStore = useAppointmentStore()
 
-const { projectId } = defineProps({
-  projectId: {
+const { appointmentId } = defineProps({
+  appointmentId: {
     type: String,
     required: true
   }
 })
 
-const deleteProject = async () => await projectStore.deleteProject(projectId)
+const deleteAppointment = async () => await appointmentStore.deleteAppointment(appointmentId)
 </script>
 
 <template>
-  <VButton @click="deleteProject" class="delete-button">Hapus</VButton>
+  <VButton @click="deleteAppointment" class="delete-button">Hapus</VButton>
 </template>
 
 <style scoped>
