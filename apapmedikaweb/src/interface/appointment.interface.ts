@@ -1,10 +1,7 @@
-import type { DoctorInterface } from '@/interface/doctor.interface';
-import type { PatientInterface } from '@/interface/patient.interface';
-
 export interface AppointmentInterface {
   id: string;
-  doctorName: doctorInterface;
-  patientName: patientInterface;
+  doctorName: string;
+  patientName: string;
   date: Date;
   diagnosis: string;
   treatments: string[];
