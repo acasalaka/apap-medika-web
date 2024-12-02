@@ -13,3 +13,12 @@ export interface DoctorInterface {
   updatedAt: Date,
   isDeleted: boolean,
 }
+
+export interface DoctorOptionInterface {
+  id: string,
+  name: string,
+}
+
+export interface DoctorScheduleInterface {
+  schedules: string[],
+}

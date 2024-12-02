@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { DataTable } from 'simple-datatables';
 import VButton from '@/components/VButton.vue';
 import { useAppointmentStore } from '@/stores/appointment';
-import VDeleteButton from '@/components/VDeleteButton.vue';
 
 const appointmentStore = useAppointmentStore();
 
@@ -17,15 +16,39 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString("id-ID", options);
 };
 
+const loading = ref(true);
+
+const patientFilter = ref('');
+const doctorFilter = ref('');
+const statusFilter = ref('');
+
+const filteredAppointments = computed(() =>
+    appointmentStore.appointments.filter((appointment) => {
+      const matchesPatient = patientFilter.value
+          ? appointment.patientName.toLowerCase().includes(patientFilter.value.toLowerCase())
+          : true;
+      const matchesDoctor = doctorFilter.value
+          ? appointment.doctorName.toLowerCase().includes(doctorFilter.value.toLowerCase())
+          : true;
+      const matchesStatus = statusFilter.value
+          ? appointment.status.toString() === statusFilter.value
+          : true;
+
+      return matchesPatient && matchesDoctor && matchesStatus;
+    })
+);
+
 onMounted(async () => {
   await appointmentStore.getAppointments();
+  loading.value = false;
 
   if (
     document.getElementById('default-table') &&
     typeof DataTable !== 'undefined'
   ) {
     new DataTable('#default-table', {
-      searchable: false,
+      searchable: true,
+      sortable: true,
     });
   }
 });
@@ -42,43 +65,33 @@ onMounted(async () => {
           <VButton class="add-button">+ Buat Appointment Baru</VButton>
         </RouterLink>
 
+        <div class="filters flex flex-row gap-4">
+          <input type="text" v-model="patientFilter" placeholder="Filter by Patient" class="filter-input"/>
+          <input type="text" v-model="doctorFilter" placeholder="Filter by Doctor" class="filter-input"/>
+          <select v-model="statusFilter" class="filter-input">
+            <option value="">Filter by Status</option>
+            <option value="Created">Created</option>
+            <option value="Done">Done</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
         <table id="default-table">
           <thead>
           <tr>
-            <th>
-              <span class="flex items-center">No.</span>
-            </th>
-            <th>
-              <span class="flex items-center">ID Appointment</span>
-            </th>
-            <th>
-              <span class="flex items-center">Pasien</span>
-            </th>
-            <th>
-              <span class="flex items-center">Dokter</span>
-            </th>
-            <th data-type="date" data-format="YYYY/DD/MM">
-              <span class="flex items-center">Tanggal Appointment</span>
-            </th>
-            <th>
-              <span class="flex items-center">Status</span>
-            </th>
-            <th>
-              <span class="flex items-center">Action</span>
-            </th>
+            <th>No.</th>
+            <th>ID Appointment</th>
+            <th>Pasien</th>
+            <th>Dokter</th>
+            <th>Tanggal Appointment</th>
+            <th>Status</th>
+            <th>Action</th>
           </tr>
           </thead>
           <tbody>
-          <tr
-              v-for="(appointment, index) in appointmentStore.appointments"
-              :key="appointment.id"
-          >
-            <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              {{ index + 1 }}
-            </td>
-            <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              {{ appointment.id }}
-            </td>
+          <tr v-for="(appointment, index) in filteredAppointments" :key="appointment.id">
+            <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ index + 1 }}</td>
+            <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ appointment.id }}</td>
             <td>{{ appointment.patientName }}</td>
             <td>{{ appointment.doctorName }}</td>
             <td>{{ formatDate(appointment.date) }}</td>
@@ -87,10 +100,6 @@ onMounted(async () => {
               <RouterLink :to="`/appointment/${appointment.id}`" class="w-full">
                 <VButton class="detail-button">Lihat</VButton>
               </RouterLink>
-              <RouterLink :to="`/appointment/${appointment.id}/edit`" class="w-full">
-                <VButton class="edit-button">Edit</VButton>
-              </RouterLink>
-              <VDeleteButton :appointmentId="appointment.id" />
             </td>
           </tr>
           </tbody>
@@ -115,9 +124,5 @@ onMounted(async () => {
 
 .detail-button {
   @apply bg-cyan-600 hover:bg-cyan-800 text-white;
-}
-
-.edit-button {
-  @apply bg-amber-600 hover:bg-amber-800 text-white;
 }
 </style>

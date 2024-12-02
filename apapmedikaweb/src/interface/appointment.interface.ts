@@ -7,6 +7,8 @@ export interface AppointmentInterface {
   treatments: string[];
   totalFee: number;
   status: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AppointmentRequestInterface {
@@ -15,13 +17,12 @@ export interface AppointmentRequestInterface {
   date: Date,
 }
 
-export interface UpdateStatusInterface {
-  idDoctor: string,
-  idPatient: string,
-  date: Date,
+export interface UpdateStatusInterface extends AppointmentRequestInterface{
+  id: string,
+  status: number,
 }
 
-export interface UpdateTreatmentInterface {
+export interface UpdateTreatmentInterface extends AppointmentRequestInterface{
   idDoctor: string,
   idPatient: string,
   date: Date,

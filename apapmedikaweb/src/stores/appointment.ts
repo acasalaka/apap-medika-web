@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import type { AppointmentInterface, AppointmentRequestInterface } from '@/interfaces/appointment.interface';
 import { useToast } from 'vue-toastification';
 import router from "@/router";
+import type {CommonResponseInterface} from "@/interface/common.interface";
+import type {UpdateStatusInterface} from "@/interface/appointment.interface";
 
 export const useAppointmentStore = defineStore('appointment', {
   state: () => ({
@@ -38,12 +40,15 @@ export const useAppointmentStore = defineStore('appointment', {
         })
 
         const data: CommonResponseInterface<AppointmentInterface> = await response.json()
-        console.log("isi data" + data)
-        this.projects.push(data.data)
+        if(response.ok) {
+          this.appointments.push(data.data)
+          useToast().success("Sukses menambahkan appointment")
+        }
+        else {
+          useToast().error(data.message)
+        }
 
-        useToast().success("Sukses menambahkan appointment")
         await router.push("/appointment")
-        console.log("test2")
       } catch (err) {
         this.error = `Gagal menambah appointment ${(err as Error).message}`
         useToast().error(this.error)
@@ -52,7 +57,7 @@ export const useAppointmentStore = defineStore('appointment', {
       }
     },
 
-    async updateAppointmentStatus(id: string, body: AppointmentRequestInterface) {
+    async updateAppointmentStatus(body: UpdateStatusInterface) {
       this.loading = true;
       this.error = null;
 
@@ -62,20 +67,28 @@ export const useAppointmentStore = defineStore('appointment', {
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, ...body }),
+            body: JSON.stringify(body),
           }
-        )
+        );
 
-        const data: CommonResponseInterface<AppointmentInterface> = await response.json();
-        this.appointments.push(data.data)
+        const data: CommonResponseInterface<UpdateStatusInterface> = await response.json();
 
-        useToast().success("Sukses mengubah status appointment")
-        await router.push("/appointment")
+        if (response.ok) {
+          const index = this.appointments.findIndex((appointment) => appointment.id === body.id);
+          if (index !== -1) {
+            this.appointments[index].status = body.status; // Update the status
+          }
+
+          useToast().success("Sukses mengubah status appointment");
+          await router.push("/appointment");
+        } else {
+          useToast().error(data.message || "Gagal mengubah status appointment");
+        }
       } catch (err) {
-        this.error = `Gagal mengubah appointment ${(err as Error).message}`
-        useToast().error(this.error)
+        this.error = `Gagal mengubah appointment ${(err as Error).message}`;
+        useToast().error(this.error);
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
 
@@ -93,6 +106,7 @@ export const useAppointmentStore = defineStore('appointment', {
         this.loading = false;
       }
     },
+
     async deleteAppointment(id: string): Promise<void> {
       this.loading = true;
       this.error = null;
