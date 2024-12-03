@@ -5,6 +5,7 @@ import VButton from '@/components/VButton.vue';
 import { useAppointmentStore } from '@/stores/appointment';
 
 const appointmentStore = useAppointmentStore();
+const error = ref<string | null>(null);
 
 const formatDate = (dateString: string) => {
   const options: Intl.DateTimeFormatOptions = {
@@ -18,25 +19,50 @@ const formatDate = (dateString: string) => {
 
 const loading = ref(true);
 
-const patientFilter = ref('');
-const doctorFilter = ref('');
 const statusFilter = ref('');
+const startDate = ref('');
+const endDate = ref('');
 
-const filteredAppointments = computed(() =>
-    appointmentStore.appointments.filter((appointment) => {
-      const matchesPatient = patientFilter.value
-          ? appointment.patientName.toLowerCase().includes(patientFilter.value.toLowerCase())
-          : true;
-      const matchesDoctor = doctorFilter.value
-          ? appointment.doctorName.toLowerCase().includes(doctorFilter.value.toLowerCase())
-          : true;
-      const matchesStatus = statusFilter.value
-          ? appointment.status.toString() === statusFilter.value
-          : true;
+const filteredAppointments = computed(() => {
+  return appointmentStore.appointments.filter((appointment) => {
+    const matchesStatus = statusFilter.value
+      ? appointment.status === statusFilter.value
+      : true;
 
-      return matchesPatient && matchesDoctor && matchesStatus;
-    })
-);
+    const matchesDate =
+      (!startDate.value || new Date(appointment.date) >= new Date(startDate.value)) &&
+      (!endDate.value || new Date(appointment.date) <= new Date(endDate.value));
+
+    return matchesStatus && matchesDate;
+  });
+});
+
+const fetchAppointmentsByDate = async () => {
+  if (!startDate.value || !endDate.value) {
+    error.value = 'Please provide both start and end dates.';
+    return;
+  }
+
+  loading.value = true;
+  error.value = '';
+
+  try {
+    const response = await fetch(
+        `http://localhost:8081/api/appointment/by-date?startDate=${startDate.value}&endDate=${endDate.value}`
+    );
+    const data = await response.json();
+
+    if (response.ok) {
+      appointmentStore.appointments = data.data;
+    } else {
+      error.value = data.message || 'Failed to fetch appointments.';
+    }
+  } catch (err) {
+    error.value = `Error: ${err.message}`;
+  } finally {
+    loading.value = false;
+  }
+};
 
 onMounted(async () => {
   await appointmentStore.getAppointments();
@@ -61,19 +87,22 @@ onMounted(async () => {
 
     <div class="px-12 py-20 w-full" v-else>
       <div v-if="!appointmentStore.error" class="flex flex-col gap-6">
+
         <RouterLink to="/appointment/add">
           <VButton class="add-button">+ Buat Appointment Baru</VButton>
         </RouterLink>
-
         <div class="filters flex flex-row gap-4">
-          <input type="text" v-model="patientFilter" placeholder="Filter by Patient" class="filter-input"/>
-          <input type="text" v-model="doctorFilter" placeholder="Filter by Doctor" class="filter-input"/>
           <select v-model="statusFilter" class="filter-input">
             <option value="">Filter by Status</option>
             <option value="Created">Created</option>
             <option value="Done">Done</option>
             <option value="Cancelled">Cancelled</option>
           </select>
+          <input type="date" v-model="startDate" placeholder="Start Date" class="filter-input" />
+          <input type="date" v-model="endDate" placeholder="End Date" class="filter-input" />
+          <VButton @click="fetchAppointmentsByDate" class="bg-blue-500 hover:bg-blue-700 text-white">
+            Apply Date Filter
+          </VButton>
         </div>
 
         <table id="default-table">

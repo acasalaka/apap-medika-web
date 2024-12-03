@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { AppointmentInterface, AppointmentRequestInterface } from '@/interfaces/appointment.interface';
+import type { AppointmentInterface, AppointmentRequestInterface, UpdateTreatmentInterface } from '@/interface/appointment.interface';
 import { useToast } from 'vue-toastification';
 import router from "@/router";
 import type {CommonResponseInterface} from "@/interface/common.interface";
@@ -57,7 +57,7 @@ export const useAppointmentStore = defineStore('appointment', {
       }
     },
 
-    async updateAppointmentStatus(body: UpdateStatusInterface) {
+    async updateAppointmentStatus(id: string, body: UpdateStatusInterface) {
       this.loading = true;
       this.error = null;
 
@@ -67,7 +67,7 @@ export const useAppointmentStore = defineStore('appointment', {
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+            body: JSON.stringify(body), // Ensure body contains the correct format
           }
         );
 
@@ -76,17 +76,56 @@ export const useAppointmentStore = defineStore('appointment', {
         if (response.ok) {
           const index = this.appointments.findIndex((appointment) => appointment.id === body.id);
           if (index !== -1) {
-            this.appointments[index].status = body.status; // Update the status
+            this.appointments[index].status = body.status;
           }
 
           useToast().success("Sukses mengubah status appointment");
-          await router.push("/appointment");
+          window.location.reload();
         } else {
           useToast().error(data.message || "Gagal mengubah status appointment");
+          console.log(data.message);
         }
       } catch (err) {
-        this.error = `Gagal mengubah appointment ${(err as Error).message}`;
+        this.error = `Gagal mengubah status appointment. ${(err as Error).message}`;
         useToast().error(this.error);
+        console.log(this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async updateAppointmentTreatment(id: string, body: UpdateTreatmentInterface) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await fetch(
+          'http://localhost:8081/api/appointment/update-treatments',
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          }
+        );
+
+        const data: CommonResponseInterface<UpdateTreatmentInterface> = await response.json();
+
+        if (response.ok) {
+          const index = this.appointments.findIndex((appointment) => appointment.id === body.id);
+          if (index !== -1) {
+            this.appointments[index].status = body.status;
+          }
+
+          useToast().success("Sukses mengubah treatment dan diagnosis appointment");
+          window.location.reload();
+        } else {
+          useToast().error(data.message || "Gagal mengubah treatment dan diagnosis appointment");
+          console.log(data.message);
+        }
+      } catch (err) {
+        this.error = `Gagal mengubah treatment dan diagnosis appointment. ${(err as Error).message}`;
+        useToast().error(this.error);
+        console.log(this.error);
       } finally {
         this.loading = false;
       }
@@ -126,7 +165,7 @@ export const useAppointmentStore = defineStore('appointment', {
           );
 
           useToast().success("Sukses menghapus appointment");
-          window.location.reload();
+          await router.push("/appointment");
         }
       } catch (err) {
         this.error = `Gagal menghapus appointment ${(err as Error).message}`;

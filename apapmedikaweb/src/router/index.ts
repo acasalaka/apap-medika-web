@@ -4,6 +4,7 @@ import CreateAppointmentView from "@/views/CreateAppointmentView.vue";
 import DetailAppointmentView from "@/views/DetailAppointmentView.vue";
 import UpdateStatusView from "@/views/UpdateStatusView.vue";
 import AppointmentView from "@/views/AppointmentView.vue";
+import UpdateDiagnosisAndTreatmentView from "@/views/UpdateDiagnosisAndTreatmentView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/appointment/:id/status',
       name: 'status-appointment',
       component: UpdateStatusView,
+    },
+    {
+      path: '/appointment/:id/treatment',
+      name: 'treatment-appointment',
+      component: UpdateDiagnosisAndTreatmentView,
     }
   ],
 })

@@ -17,13 +17,13 @@ export interface AppointmentRequestInterface {
   date: Date,
 }
 
-export interface UpdateStatusInterface extends AppointmentRequestInterface{
+export interface UpdateStatusInterface {
   id: string,
   status: number,
 }
 
-export interface UpdateTreatmentInterface extends AppointmentRequestInterface{
-  idDoctor: string,
-  idPatient: string,
-  date: Date,
+export interface UpdateTreatmentInterface {
+  id: string,
+  diagnosis: string,
+  treatments: number[]
 }
