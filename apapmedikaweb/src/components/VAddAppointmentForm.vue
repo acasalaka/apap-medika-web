@@ -7,6 +7,8 @@ import type { DoctorOptionInterface, DoctorScheduleInterface } from '@/interface
 import { ref, onMounted, watch } from 'vue';
 import type { CommonResponseInterface } from '@/interface/common.interface';
 import { useRouter } from 'vue-router';
+import type { PropType } from "vue";
+
 
 const router = useRouter();
 
