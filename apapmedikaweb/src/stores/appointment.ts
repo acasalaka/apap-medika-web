@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
-import type { AppointmentInterface, AppointmentRequestInterface } from '@/interfaces/appointment.interface';
 import { useToast } from 'vue-toastification';
 import router from "@/router";
+import { type CommonResponseInterface } from '@/interface/common.interface';
+import type { AppointmentInterface, AppointmentRequestInterface } from '@/interface/appointment.interface';
 
 export const useAppointmentStore = defineStore('appointment', {
   state: () => ({
