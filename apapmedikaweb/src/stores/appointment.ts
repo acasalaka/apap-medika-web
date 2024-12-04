@@ -67,7 +67,7 @@ export const useAppointmentStore = defineStore('appointment', {
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body), // Ensure body contains the correct format
+            body: JSON.stringify(body),
           }
         );
 
