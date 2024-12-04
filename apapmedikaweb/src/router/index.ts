@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import CreateAppointmentView from '@/views/CreateAppointmentView.vue';
-import DetailAppointmentView from '@/views/DetailAppointmentView.vue';
-import UpdateStatusView from '@/views/UpdateStatusView.vue';
-import AppointmentView from '@/views/AppointmentView.vue';
+import CreateAppointmentView from '@/views/appointment/CreateAppointmentView.vue';
+import DetailAppointmentView from '@/views/appointment/DetailAppointmentView.vue';
+import UpdateStatusView from '@/views/appointment/UpdateStatusView.vue';
+import AppointmentView from '@/views/appointment/AppointmentView.vue';
 import LoginView from '@/views/LoginView.vue';
 import HomeNotLoggedInView from '../views/HomeNotLoggedInView.vue';
 import RegisterView from '@/views/RegisterView.vue';
@@ -11,6 +11,7 @@ import UserDetailView from '@/views/UserDetailView.vue';
 import ViewAllPatient from '@/views/ViewAllPatient.vue';
 import PatientDetailsView from '@/views/PatientDetailsView.vue';
 import ReadAllPolicyView from '@/views/ReadAllPolicyView.vue';
+import UpdateDiagnosisAndTreatmentView from "@/views/appointment/UpdateDiagnosisAndTreatmentView.vue";
 
 // Simulated authentication check (use a real auth system in production)
 function isLoggedIn(): boolean {
@@ -90,6 +91,12 @@ const router = createRouter({
       path: '/appointment/:id/status',
       name: 'status-appointment',
       component: UpdateStatusView,
+      meta: { requiresAuth: true }, // Protected route
+    },
+    {
+      path: '/appointment/:id/treatment',
+      name: 'treatment-appointment',
+      component: UpdateDiagnosisAndTreatmentView,
       meta: { requiresAuth: true }, // Protected route
     },
   ],

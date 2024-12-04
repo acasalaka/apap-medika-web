@@ -88,7 +88,7 @@ const logout = () => {
   <header class="fixed flex items-center justify-between w-full px-3 py-4 bg-white">
     <!-- Left side: Logo and navigation links -->
     <div class="flex items-center gap-6">
-      <RouterLink to="/home" class="text-xl font-bold text-green-600">ApapMedika</RouterLink>
+      <RouterLink to="/home" class="text-xl font-bold text-green-600"><img src="@/assets/ApapMedika.png" alt="ApapMedika" class="w-24 h-auto px-1.5" /></RouterLink>
 
       <!-- Navigation links based on user role -->
       <nav class="flex gap-6">

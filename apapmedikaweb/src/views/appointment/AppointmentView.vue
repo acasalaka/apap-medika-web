@@ -48,7 +48,7 @@ const fetchAppointmentsByDate = async () => {
 
   try {
     const response = await fetch(
-        `http://localhost:8081/api/appointment/by-date?startDate=${startDate.value}&endDate=${endDate.value}`
+      `http://localhost:8081/api/appointment/by-date?startDate=${startDate.value}&endDate=${endDate.value}`
     );
     const data = await response.json();
 
@@ -87,10 +87,11 @@ onMounted(async () => {
 
     <div class="px-12 py-20 w-full" v-else>
       <div v-if="!appointmentStore.error" class="flex flex-col gap-6">
-
-        <RouterLink to="/appointment/add">
-          <VButton class="add-button">+ Buat Appointment Baru</VButton>
-        </RouterLink>
+        <div v-if="appointmentStore.role==='ADMIN'">
+            <RouterLink to="/appointment/add">
+              <VButton class="add-button">+ Buat Appointment Baru</VButton>
+            </RouterLink>
+        </div>
         <div class="filters flex flex-row gap-4">
           <select v-model="statusFilter" class="filter-input">
             <option value="">Filter by Status</option>

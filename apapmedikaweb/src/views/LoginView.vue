@@ -90,6 +90,10 @@ const login = async () => {
             Login
           </button>
         </div>
+
+        <div class="flex justify-center items-center w-full">
+          <RouterLink class="underline justify-center px-4 py-2 text-gray-600 hover:text-gray-800 " to="/register"><span>Don't have an account? Register</span></RouterLink>
+        </div>
       </form>
     </div>
   </div>

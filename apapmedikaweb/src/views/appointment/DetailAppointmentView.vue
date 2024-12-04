@@ -14,10 +14,10 @@ const { id: appointmentId } = route.params
 const appointmentStore = useAppointmentStore()
 const appointment = ref<AppointmentInterface | null>(null)
 const disabledCheck = ref<boolean | null>(false)
+
 const getAppointment = async () => {
   try {
     appointment.value = await appointmentStore.getAppointmentDetail(appointmentId as string)
-    console.log(appointment.value)
     if (appointment.value.status != 'Created'){
       disabledCheck.value = true;
     }
@@ -34,9 +34,11 @@ onMounted(getAppointment)
     <div v-if="appointment" class="w-[60%] flex flex-col gap-2 divide-y-2 bg-white drop-shadow-xl p-6 rounded-xl">
       <div class="w-full flex justify-between">
         <h1 class="text-green-600 font-bold text-xl">Detail Appointment</h1>
-        <RouterLink :to="`/appointment/${appointmentId}/status`" class="w-[200px] ml-auto">
-          <VButton class="bg-orange-400 hover:bg-orange-800 text-white">{{ appointment.status }}</VButton>
-        </RouterLink>
+        <div v-if="appointmentStore.role==='ADMIN'">
+          <RouterLink :to="`/appointment/${appointmentId}/status`" class="flex justify-end w-40">
+            <VButton class="bg-orange-400 hover:bg-orange-800 text-white">Update Status</VButton>
+          </RouterLink>
+        </div>
       </div>
       <div class="flex flex-col gap-2 py-4">
         <div class="flex flex-row gap-1 w-full">
@@ -92,17 +94,21 @@ onMounted(getAppointment)
           </span>
         </div>
       </div>
-      <div class="flex gap-2 py-2">
+      <div class="grid grid-cols-2 py-2 gap-2">
         <VButton @click="router.back()" class="bg-slate-600 hover:bg-slate-800 text-white">Kembali</VButton>
-        <RouterLink :to="`/appointment/${appointmentId}/treatment`" class="w-full">
-          <VButton class="bg-blue-400 hover:bg-blue-600 text-white">Update Diagnosis</VButton>
-        </RouterLink>
-        <RouterLink :to="`/reservation/add`" class="w-full">
-          <VButton :disabled="disabledCheck" class="bg-purple-400 hover:bg-purple-600 text-white">
-            Make Reservation
-          </VButton>
-        </RouterLink>
-        <VDeleteButton :appointmentId="appointment.id" />
+        <div v-if="appointmentStore.role === 'DOCTOR'">
+          <RouterLink :to="`/appointment/${appointmentId}/treatment`" class="w-full">
+            <VButton :disabled="disabledCheck" class="bg-blue-400 hover:bg-blue-600 text-white">Update Diagnosis & Treatment</VButton>
+          </RouterLink>
+        </div>
+        <div v-if="appointmentStore.role === 'NURSE'">
+          <RouterLink :to="`/reservation/add`">
+            <VButton :disabled="disabledCheck" class="bg-purple-400 hover:bg-purple-600 text-white">Make Reservation</VButton>
+          </RouterLink>
+        </div>
+        <div v-if="appointmentStore.role === 'ADMIN'">
+          <VDeleteButton :appointmentId="appointment.id"/>
+        </div>
       </div>
     </div>
   </main>

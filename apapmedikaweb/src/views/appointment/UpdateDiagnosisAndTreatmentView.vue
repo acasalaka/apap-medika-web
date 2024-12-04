@@ -96,9 +96,15 @@ onMounted(() => {
         </h1>
       </div>
 
-      <p><strong>Pasien: </strong> {{ appointmentDetails.patientName || "Data not available" }}</p>
-      <p><strong>Dokter: </strong> {{ appointmentDetails.doctorName || "Data not available" }}</p>
-      <p><strong>Status: </strong> {{ appointmentDetails.status }}</p>
+      <div class="w-full flex justify-between">
+        <p><strong>Pasien: </strong> {{ appointmentDetails.patientName || "Data not available" }}</p>
+      </div>
+      <div class="w-full flex justify-between">
+        <p><strong>Dokter: </strong> {{ appointmentDetails.doctorName || "Data not available" }}</p>
+      </div>
+      <div class="w-full flex justify-between">
+        <p><strong>Status: </strong> {{ appointmentDetails.status }}</p>
+      </div>
 
       <form @submit.prevent="updateAppointmentTreatment" class="flex flex-col gap-4 p-4">
         <label for="diagnosis" class="font-bold">Diagnosis:</label>
