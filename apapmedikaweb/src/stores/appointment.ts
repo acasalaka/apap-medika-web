@@ -39,12 +39,15 @@ export const useAppointmentStore = defineStore('appointment', {
         })
 
         const data: CommonResponseInterface<AppointmentInterface> = await response.json()
-        console.log("isi data" + data)
-        this.projects.push(data.data)
+        if(response.ok) {
+          this.appointments.push(data.data)
+          useToast().success("Sukses menambahkan appointment")
+        }
+        else {
+          useToast().error(data.message)
+        }
 
-        useToast().success("Sukses menambahkan appointment")
         await router.push("/appointment")
-        console.log("test2")
       } catch (err) {
         this.error = `Gagal menambah appointment ${(err as Error).message}`
         useToast().error(this.error)
@@ -53,7 +56,7 @@ export const useAppointmentStore = defineStore('appointment', {
       }
     },
 
-    async updateAppointmentStatus(id: string, body: AppointmentRequestInterface) {
+    async updateAppointmentStatus(id: string, body: UpdateStatusInterface) {
       this.loading = true;
       this.error = null;
 
@@ -63,20 +66,67 @@ export const useAppointmentStore = defineStore('appointment', {
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, ...body }),
+            body: JSON.stringify(body), // Ensure body contains the correct format
           }
-        )
+        );
 
-        const data: CommonResponseInterface<AppointmentInterface> = await response.json();
-        this.appointments.push(data.data)
+        const data: CommonResponseInterface<UpdateStatusInterface> = await response.json();
 
-        useToast().success("Sukses mengubah status appointment")
-        await router.push("/appointment")
+        if (response.ok) {
+          const index = this.appointments.findIndex((appointment) => appointment.id === body.id);
+          if (index !== -1) {
+            this.appointments[index].status = body.status;
+          }
+
+          useToast().success("Sukses mengubah status appointment");
+          window.location.reload();
+        } else {
+          useToast().error(data.message || "Gagal mengubah status appointment");
+          console.log(data.message);
+        }
       } catch (err) {
-        this.error = `Gagal mengubah appointment ${(err as Error).message}`
-        useToast().error(this.error)
+        this.error = `Gagal mengubah status appointment. ${(err as Error).message}`;
+        useToast().error(this.error);
+        console.log(this.error);
       } finally {
-        this.loading = false
+        this.loading = false;
+      }
+    },
+
+    async updateAppointmentTreatment(id: string, body: UpdateTreatmentInterface) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await fetch(
+          'http://localhost:8081/api/appointment/update-treatments',
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          }
+        );
+
+        const data: CommonResponseInterface<UpdateTreatmentInterface> = await response.json();
+
+        if (response.ok) {
+          const index = this.appointments.findIndex((appointment) => appointment.id === body.id);
+          if (index !== -1) {
+            this.appointments[index].status = body.status;
+          }
+
+          useToast().success("Sukses mengubah treatment dan diagnosis appointment");
+          window.location.reload();
+        } else {
+          useToast().error(data.message || "Gagal mengubah treatment dan diagnosis appointment");
+          console.log(data.message);
+        }
+      } catch (err) {
+        this.error = `Gagal mengubah treatment dan diagnosis appointment. ${(err as Error).message}`;
+        useToast().error(this.error);
+        console.log(this.error);
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -94,6 +144,7 @@ export const useAppointmentStore = defineStore('appointment', {
         this.loading = false;
       }
     },
+
     async deleteAppointment(id: string): Promise<void> {
       this.loading = true;
       this.error = null;
@@ -113,7 +164,7 @@ export const useAppointmentStore = defineStore('appointment', {
           );
 
           useToast().success("Sukses menghapus appointment");
-          window.location.reload();
+          await router.push("/appointment");
         }
       } catch (err) {
         this.error = `Gagal menghapus appointment ${(err as Error).message}`;

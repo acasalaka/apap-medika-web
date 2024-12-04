@@ -7,6 +7,8 @@ export interface AppointmentInterface {
   treatments: string[];
   totalFee: number;
   status: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AppointmentRequestInterface {
@@ -16,13 +18,12 @@ export interface AppointmentRequestInterface {
 }
 
 export interface UpdateStatusInterface {
-  idDoctor: string,
-  idPatient: string,
-  date: Date,
+  id: string,
+  status: number,
 }
 
 export interface UpdateTreatmentInterface {
-  idDoctor: string,
-  idPatient: string,
-  date: Date,
+  id: string,
+  diagnosis: string,
+  treatments: number[]
 }

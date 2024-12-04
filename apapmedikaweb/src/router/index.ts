@@ -70,19 +70,19 @@ const router = createRouter({
     },
     {
       path: '/appointment/add',
-      name: 'tambah appointment',
+      name: 'add-appointment',
       component: CreateAppointmentView,
       meta: { requiresAuth: true }, // Protected route
     },
     {
       path: '/appointment/:id',
-      name: 'detail appointment',
+      name: 'detail-appointment',
       component: DetailAppointmentView,
       meta: { requiresAuth: true }, // Protected route
     },
     {
-      path: '/appointment/:id/edit',
-      name: 'ubah status appointment',
+      path: '/appointment/:id/status',
+      name: 'status-appointment',
       component: UpdateStatusView,
       meta: { requiresAuth: true }, // Protected route
     },
