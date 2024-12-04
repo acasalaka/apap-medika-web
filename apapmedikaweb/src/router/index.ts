@@ -10,6 +10,7 @@ import HomeView from '@/views/HomeView.vue';
 import UserDetailView from '@/views/UserDetailView.vue';
 import ViewAllPatient from '@/views/ViewAllPatient.vue';
 import PatientDetailsView from '@/views/PatientDetailsView.vue';
+import ReadAllPolicyView from '@/views/ReadAllPolicyView.vue';
 
 // Simulated authentication check (use a real auth system in production)
 function isLoggedIn(): boolean {
@@ -61,6 +62,11 @@ const router = createRouter({
       name: 'viewAllPatient',
       component: ViewAllPatient,
       meta: { requiresAuth: true }, // Public route
+    },
+    { path: '/insurance',
+      name: 'insurance',
+      component: ReadAllPolicyView,
+      meta: { requiresAuth: true }, // Protected route
     },
     {
       path: '/appointment',

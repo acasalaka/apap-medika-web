@@ -13,6 +13,9 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "axios": "^1.7.9",
+    "datatables.net": "^2.1.8",
+    "datatables.net-dt": "^2.1.8",
     "date-fns": "^4.1.0",
     "flowbite": "^2.5.2",
     "jwt-decode": "^4.0.0",
@@ -20,7 +23,8 @@
     "simple-datatables": "^9.2.1",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5",
-    "vue-toastification": "^2.0.0-rc.5"
+    "vue-toastification": "^2.0.0-rc.5",
+    "vue3-data-table": "^1.0.2"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",

@@ -61,6 +61,7 @@ const fetchUserRole = async (email: string) => {
     const data = await response.json();
     console.log('API Role Response:', data);
 
+    localStorage.setItem('role', data.data.role);
     userRole.value = data.data.role;
     name.value = data.data.name;
     isLoggedIn.value = true;

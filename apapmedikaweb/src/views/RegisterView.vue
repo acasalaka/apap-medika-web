@@ -198,6 +198,37 @@ const register = async () => {
           </select>
         </div>
 
+        <div v-if="role === 'PATIENT'">
+          <label for="nik" class="block text-sm font-medium text-gray-700">NIK</label>
+          <input
+            v-model="nik"
+            id="nik"
+            type="text"
+            class="block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <label for="birthPlace" class="block text-sm font-medium text-gray-700">Birth Place</label>
+          <input
+            v-model="birthPlace"
+            id="birthPlace"
+            type="text"
+            class="block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <label for="birthDate" class="block text-sm font-medium text-gray-700">Birth Date</label>
+          <input
+            v-model="birthDate"
+            id="birthDate"
+            type="date"
+            class="block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <label for="patientClass" class="block text-sm font-medium text-gray-700">Patient Class</label>
+          <input
+            v-model="patientClass"
+            id="patientClass"
+            type="number"
+            class="block w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+        </div>
+
         <!-- Dynamic Fields for Doctor -->
         <div v-if="role === 'DOCTOR'">
           <div>
@@ -232,6 +263,7 @@ const register = async () => {
             />
           </div>
         </div>
+
 
         <!-- Schedule Fields -->
         <div v-if="role === 'DOCTOR'">
