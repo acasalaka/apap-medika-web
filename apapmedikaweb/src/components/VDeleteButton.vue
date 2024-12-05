@@ -1,8 +1,9 @@
 <script setup lang="ts">
-
+import { useRouter } from 'vue-router';
 import VButton from '@/components/VButton.vue'
 import { useAppointmentStore } from '@/stores/appointment'
 
+const router = useRouter();
 const appointmentStore = useAppointmentStore()
 
 const { appointmentId } = defineProps({
@@ -12,7 +13,19 @@ const { appointmentId } = defineProps({
   }
 })
 
-const deleteAppointment = async () => await appointmentStore.deleteAppointment(appointmentId)
+const deleteAppointment = async () => {
+  if (confirm('Apakah Anda yakin ingin menghapus appointment ini?')) {
+    try {
+      await appointmentStore.deleteAppointment(appointmentId as string);
+      alert('Appointment berhasil dihapus.');
+      await router.push('/appointment');
+    } catch (error) {
+      console.error('Gagal menghapus appointment:', error);
+      alert('Gagal menghapus appointment. Silakan coba lagi.');
+    }
+  }
+};
+
 </script>
 
 <template>

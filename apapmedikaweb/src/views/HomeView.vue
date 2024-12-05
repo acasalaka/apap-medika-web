@@ -1,26 +1,35 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
-import VButton from '@/components/VButton.vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const isLoggedIn = ref(false);
+
+// Check if the user is logged in by verifying the presence of the auth token
+const checkAuthentication = () => {
+  const authToken = localStorage.getItem('authToken');
+  if (authToken) {
+    isLoggedIn.value = true;
+  }
+};
+
+onMounted(() => {
+  checkAuthentication();
+  if (!isLoggedIn.value) {
+    router.push('/login'); // If not logged in, redirect to login page
+  }
+});
 </script>
 
 <template>
-  <main class="flex items-center justify-center w-full h-screen">
-    <div class="flex flex-col w-fit gap-2 items-center">
-      <h1 class="text-4xl font-bold">
-        Selamat datang di
-        <span class="text-green-600">ApapMedika</span>
-      </h1>
-      <div class="w-full flex justify-center gap-2">
-        <RouterLink to="/appointment" class="w-1/2">
-          <VButton class="home-button">Ke Halaman Appointment</VButton>
-        </RouterLink>
-      </div>
+  <div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="text-center">
+      <h1 class="text-3xl font-bold text-green-600">Selamat Datang ke ApapMedika!</h1>
+      <p class="mt-4 text-lg">Anda berhasil masuk! Selamat datang di aplikasi kami.</p>
     </div>
-  </main>
+  </div>
 </template>
 
 <style scoped>
-.home-button {
-  @apply hover:bg-green-600 border-2 border-green-600 text-green-600;
-}
+/* Add additional styling here if needed */
 </style>
