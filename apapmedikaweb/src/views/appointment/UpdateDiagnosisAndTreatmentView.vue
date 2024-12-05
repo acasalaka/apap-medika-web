@@ -30,6 +30,7 @@ const treatmentUpdateModel = reactive<UpdateTreatmentInterface>({
   id: appointmentDetails.id,
   diagnosis: "",
   treatments: [],
+  updatedBy: ""
 });
 
 const treatmentOptions = ref<TreatmentOptionInterface[]>([]);

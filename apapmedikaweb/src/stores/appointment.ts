@@ -2,8 +2,8 @@ import { defineStore } from 'pinia';
 import type { AppointmentInterface, AppointmentRequestInterface, UpdateTreatmentInterface } from '@/interface/appointment.interface';
 import { useToast } from 'vue-toastification';
 import router from "@/router";
-import type {CommonResponseInterface} from "@/interface/common.interface";
-import type {UpdateStatusInterface} from "@/interface/appointment.interface";
+import type { CommonResponseInterface } from "@/interface/common.interface";
+import type { UpdateStatusInterface } from "@/interface/appointment.interface";
 
 export const useAppointmentStore = defineStore('appointment', {
   state: () => ({
@@ -16,8 +16,8 @@ export const useAppointmentStore = defineStore('appointment', {
     actions: {
       decodeJWT(token: string) {
         try {
-          const decoded = JSON.parse(atob(token.split('.')[1])); // decode base64 URL part of JWT
-          return decoded.sub; // assuming email is stored as 'sub' in the JWT
+          const decoded = JSON.parse(atob(token.split('.')[1]));
+          return decoded.sub;
         } catch (error) {
           console.error('Failed to decode JWT:', error);
           return null;
@@ -59,14 +59,32 @@ export const useAppointmentStore = defineStore('appointment', {
 
           if (this.userId) {
             if (this.role !== 'DOCTOR') {
-              const response = await fetch('http://localhost:8081/api/appointment/viewall');
+              const response = await fetch(`http://localhost:8081/api/appointment/viewall`, {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                  'Content-Type': 'application/json',
+                },
+              });
               const data: CommonResponseInterface<AppointmentInterface[]> = await response.json();
               this.appointments = data.data;
+              if (data.status === 401) {
+                useToast().error('Anda tidak memiliki akses ke endpoint ini.')
+              }
               console.log("fetch data selain doctor");
             } else  {
-              const response = await fetch(`http://localhost:8081/api/appointment/by-doctor?idDoctor=${this.userId}`);
+              const response = await fetch(`http://localhost:8081/api/appointment/by-doctor?idDoctor=${this.userId}`, {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                  'Content-Type': 'application/json',
+                },
+              });
               const data: CommonResponseInterface<AppointmentInterface[]> = await response.json();
               this.appointments = data.data;
+              if (data.status === 404) {
+                useToast().error('Dokter tidak memiliki appointment.');
+              }
               console.log("fetch data doctor")
             }
           } else {
@@ -88,7 +106,10 @@ export const useAppointmentStore = defineStore('appointment', {
       try {
         const response = await fetch('http://localhost:8081/api/appointment/add', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          },
           body: JSON.stringify(body),
         })
 
@@ -119,11 +140,14 @@ export const useAppointmentStore = defineStore('appointment', {
           'http://localhost:8081/api/appointment/update-status',
           {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            },
+
             body: JSON.stringify(body),
           }
         );
-
         const data: CommonResponseInterface<UpdateStatusInterface> = await response.json();
 
         if (response.ok) {
@@ -156,7 +180,10 @@ export const useAppointmentStore = defineStore('appointment', {
           'http://localhost:8081/api/appointment/update-treatments',
           {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            },
             body: JSON.stringify(body),
           }
         );
@@ -188,9 +215,14 @@ export const useAppointmentStore = defineStore('appointment', {
       this.loading = true;
       this.error = null;
 
-
       try {
-        const response: Response = await fetch(`http://localhost:8081/api/appointment?id=${id}`);
+        const response = await fetch(`http://localhost:8081/api/appointment?id=${id}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            'Content-Type': 'application/json',
+          },
+        });
         const data: CommonResponseInterface<AppointmentInterface> = await response.json();
         return data.data;
       } catch (err) {
@@ -209,7 +241,9 @@ export const useAppointmentStore = defineStore('appointment', {
           `http://localhost:8081/api/appointment/${id}/delete`,
           {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json' },
+              'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           }
         );
 
@@ -218,8 +252,8 @@ export const useAppointmentStore = defineStore('appointment', {
             (appointment: AppointmentInterface) => appointment.id !== id
           );
 
-          useToast().success("Sukses menghapus appointment");
           await router.push("/appointment");
+          useToast().success("Sukses menghapus appointment");
         }
       } catch (err) {
         this.error = `Gagal menghapus appointment ${(err as Error).message}`;

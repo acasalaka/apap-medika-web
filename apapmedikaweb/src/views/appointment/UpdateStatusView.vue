@@ -29,6 +29,7 @@ const appointmentDetails = reactive<AppointmentInterface>({
 const statusUpdateModel = reactive<UpdateStatusInterface>({
   id: appointmentDetails.id,
   status: 0,
+  updatedBy: ""
 });
 
 const statusOptions = computed(() => {

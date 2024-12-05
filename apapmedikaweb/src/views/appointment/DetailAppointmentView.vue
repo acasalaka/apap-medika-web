@@ -15,6 +15,16 @@ const appointmentStore = useAppointmentStore()
 const appointment = ref<AppointmentInterface | null>(null)
 const disabledCheck = ref<boolean | null>(false)
 
+const formatDate = (dateString: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+  const date = new Date(dateString);
+  return date.toLocaleDateString("id-ID", options);
+};
+
 const getAppointment = async () => {
   try {
     appointment.value = await appointmentStore.getAppointmentDetail(appointmentId as string)
@@ -84,14 +94,22 @@ onMounted(getAppointment)
         <div class="flex flex-row gap-1 w-full">
           <span class="text-l font-bold">Dibuat pada: </span>
           <span class="text-l font-regular">
-            {{ format(new Date(appointment.createdAt), 'EEEE, dd MMMM yyyy', { locale: id }) }}
+            {{ formatDate(appointment.createdAt) }}
           </span>
         </div>
         <div class="flex flex-row gap-1 w-full">
           <span class="text-l font-bold">Diperbaharui pada: </span>
           <span class="text-l font-regular">
-            {{ format(new Date(appointment.updatedAt), 'EEEE, dd MMMM yyyy', { locale: id }) }}
+            {{ formatDate(appointment.updatedAt) }}
           </span>
+        </div>
+        <div class="flex flex-row gap-1 w-full">
+          <span class="text-l font-bold">Dibuat oleh: </span>
+          <span class="text-l font-regular">{{ appointment.createdBy }}</span>
+        </div>
+        <div class="flex flex-row gap-1 w-full">
+          <span class="text-l font-bold">Diperbaharui oleh: </span>
+          <span class="text-l font-regular">{{ appointment.updatedBy }}</span>
         </div>
       </div>
       <div class="grid grid-cols-2 py-2 gap-2">

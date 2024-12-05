@@ -9,6 +9,8 @@ export interface AppointmentInterface {
   status: number;
   createdAt: Date;
   updatedAt: Date;
+  createdBy: string;
+  updatedBy: string;
 }
 
 export interface AppointmentRequestInterface {
@@ -20,10 +22,12 @@ export interface AppointmentRequestInterface {
 export interface UpdateStatusInterface {
   id: string,
   status: number,
+  updatedBy: string,
 }
 
 export interface UpdateTreatmentInterface {
   id: string,
   diagnosis: string,
-  treatments: number[]
+  treatments: number[],
+  updatedBy: string,
 }
