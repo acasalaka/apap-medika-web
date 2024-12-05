@@ -58,7 +58,7 @@ export const useAppointmentStore = defineStore('appointment', {
           await this.fetchUserByEmail(email);
 
           if (this.userId) {
-            if (this.role !== 'DOCTOR') {
+            if (this.role === 'ADMIN' || this.role === 'NURSE') {
               const response = await fetch(`http://localhost:8081/api/appointment/viewall`, {
                 method: 'GET',
                 headers: {
@@ -66,26 +66,68 @@ export const useAppointmentStore = defineStore('appointment', {
                   'Content-Type': 'application/json',
                 },
               });
-              const data: CommonResponseInterface<AppointmentInterface[]> = await response.json();
-              this.appointments = data.data;
-              if (data.status === 401) {
-                useToast().error('Anda tidak memiliki akses ke endpoint ini.')
+              if (!response.ok) {
+                const errorMsg = `Failed to fetch appointments. Status: ${response.status}`;
+                this.error = errorMsg;
+                useToast().error(this.error);
+                return;
               }
-              console.log("fetch data selain doctor");
-            } else  {
-              const response = await fetch(`http://localhost:8081/api/appointment/by-doctor?idDoctor=${this.userId}`, {
+              const data: CommonResponseInterface<AppointmentInterface[]> = await response.json();
+              if (!data || !data.data) {
+                this.error = 'No appointments found or invalid response format.';
+                useToast().error(this.error);
+                return;
+              }
+              this.appointments = data.data;
+              console.log("fetch data ADMIN dan NURSE");
+              } else if (this.role === 'DOCTOR')  {
+                const response = await fetch(`http://localhost:8081/api/appointment/by-doctor?idDoctor=${this.userId}`, {
+                  method: 'GET',
+                  headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    'Content-Type': 'application/json',
+                  },
+                });
+                if (response.status === 404) {
+                  const errorMsg = `Dokter dengan ID ${this.userId} tidak memiliki Appointments` ;
+                  this.error = errorMsg;
+                  useToast().error(this.error);
+                  return;
+                }
+                const data: CommonResponseInterface<AppointmentInterface[]> = await response.json();
+
+                if (!data || !data.data) {
+                  this.error = 'No appointments found or invalid response format.';
+                  useToast().error(this.error);
+                  return;
+                }
+
+                this.appointments = data.data;
+                console.log("fetch data doctor")
+            } else if (this.role === 'PATIENT')  {
+              const response = await fetch(`http://localhost:8081/api/appointment/by-patient?idPatient=${this.userId}`, {
                 method: 'GET',
                 headers: {
                   'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
                   'Content-Type': 'application/json',
                 },
               });
-              const data: CommonResponseInterface<AppointmentInterface[]> = await response.json();
-              this.appointments = data.data;
-              if (data.status === 404) {
-                useToast().error('Dokter tidak memiliki appointment.');
+              if (response.status === 404) {
+                const errorMsg = `Patient dengan ID ${this.userId} tidak memiliki Appointments` ;
+                this.error = errorMsg;
+                useToast().error(this.error);
+                return;
               }
-              console.log("fetch data doctor")
+              const data: CommonResponseInterface<AppointmentInterface[]> = await response.json();
+
+              if (!data || !data.data) {
+                this.error = 'No appointments found or invalid response format.';
+                useToast().error(this.error);
+                return;
+              }
+
+              this.appointments = data.data;
+              console.log("fetch data PATIENT")
             }
           } else {
             useToast().error('User ID not found.');
@@ -97,7 +139,6 @@ export const useAppointmentStore = defineStore('appointment', {
           this.loading = false;
         }
       },
-
 
     async addAppointment(body: AppointmentRequestInterface) {
       this.loading = true;
