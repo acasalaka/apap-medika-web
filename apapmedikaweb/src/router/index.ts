@@ -1,4 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import ReservationView from '@/views/ReservationView.vue';
+import CreateReservationView from '@/views/CreateReservationView.vue';
+import DetailReservationView from '@/views/DetailReservationView.vue';
+import BillView from '@/views/BillView.vue';
+import DetailBillView from '@/views/DetailBillView.vue';
 import CreateAppointmentView from '@/views/appointment/CreateAppointmentView.vue';
 import DetailAppointmentView from '@/views/appointment/DetailAppointmentView.vue';
 import UpdateStatusView from '@/views/appointment/UpdateStatusView.vue';
@@ -97,6 +102,36 @@ const router = createRouter({
       path: '/appointment/:id/treatment',
       name: 'treatment-appointment',
       component: UpdateDiagnosisAndTreatmentView,
+      meta: { requiresAuth: true }, // Protected route
+    },
+    {
+      path: '/reservation',
+      name: 'reservation',
+      component: ReservationView,
+      meta: { requiresAuth: true }, // Protected route
+    },
+    {
+      path: '/reservation/:id',
+      name: 'detail reservation',
+      component: DetailReservationView,
+      meta: { requiresAuth: true }, // Protected route
+    },
+    {
+      path: '/bill',
+      name: 'bill',
+      component: BillView,
+      meta: { requiresAuth: true }, // Protected route
+    },
+    {
+      path: '/bill/:id',
+      name : 'detail bill',
+      component: DetailBillView,
+      meta: { requiresAuth: true }, // Protected route
+    },
+    {
+      path:'/reservation/add',
+      name: 'tambah reservation',
+      component: CreateReservationView,
       meta: { requiresAuth: true }, // Protected route
     },
   ],
