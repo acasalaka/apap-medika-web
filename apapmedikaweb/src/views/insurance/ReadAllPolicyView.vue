@@ -87,9 +87,9 @@ const fetchPolicies = async () => {
     let url = '';
 
     if (role.value === 'ADMIN') {
-      url = 'http://localhost:8081/api/policy/admin/all';
+      url = 'http://localhost:8082/api/policy/admin/all';
     } else if (role.value === 'PATIENT' && patientId.value) {
-      url = `http://localhost:8081/api/policy/patient/all?id=${patientId.value}`;
+      url = `http://localhost:8082/api/policy/patient/all?id=${patientId.value}`;
     }
 
     if (role.value === 'PATIENT' && patientId.value){

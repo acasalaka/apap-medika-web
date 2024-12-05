@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import VButton from "@/components/VButton.vue";
+import { RouterLink } from 'vue-router';
+import VButton from '@/components/VButton.vue';
 </script>
 
 <template>
