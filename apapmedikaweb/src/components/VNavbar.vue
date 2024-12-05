@@ -118,8 +118,8 @@ const logout = () => {
 
         <RouterLink
           v-if="userRole === 'ADMIN' || userRole === 'NURSE' || userRole === 'PATIENT'"
-          to="/hospitalization"
-          :class="getLinkClass('/hospitalization')"
+          to="/reservation"
+          :class="getLinkClass('/reservation')"
         >
           Reservation
         </RouterLink>
