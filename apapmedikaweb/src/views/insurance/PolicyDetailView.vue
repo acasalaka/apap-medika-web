@@ -40,7 +40,7 @@ const role = ref<'ADMIN' | 'PATIENT'>('ADMIN');
 const fetchPolicyDetails = async () => {
   try {
     const policyId = route.params.id;
-    const response = await fetch(`http://localhost:8081/api/policy/detail?id=${policyId}`, {
+    const response = await fetch(`http://localhost:8082/api/policy/detail?id=${policyId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -93,7 +93,7 @@ const initializeDataTable = () => {
 // Fetch coverages for the company
 const fetchCompanyCoverages = async (companyId: string) => {
   try {
-    const response = await fetch(`http://localhost:8081/api/company/get_coverages?id=${companyId}`, {
+    const response = await fetch(`http://localhost:8082/api/company/get_coverages?id=${companyId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -117,7 +117,7 @@ const fetchCompanyCoverages = async (companyId: string) => {
 // Fetch used coverages for the policy
 const fetchUsedCoverages = async (policyId: string) => {
   try {
-    const response = await fetch(`http://localhost:8081/api/policy/get_used_coverages?policyId=${policyId}`, {
+    const response = await fetch(`http://localhost:8082/api/policy/get_used_coverages?policyId=${policyId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -160,7 +160,7 @@ const updateExpiryDate = async () => {
     };
 
     const response = await axios.put(
-        `http://localhost:8081/api/policy/update-expirydate`,
+        `http://localhost:8082/api/policy/update-expirydate`,
         requestPayload,
         {
           headers: {
@@ -184,7 +184,7 @@ const cancelPolicy = async () => {
     const authToken = localStorage.getItem('authToken');
     const policyId = route.params.id;
     const response = await axios.put(
-      `http://localhost:8081/api/policy/cancel?id=${policyId}`,
+      `http://localhost:8082/api/policy/cancel?id=${policyId}`,
       {},
       {
         headers: {
@@ -204,7 +204,7 @@ const cancelPolicy = async () => {
 const deletePolicy = async () => {
   try {
     const policyId = route.params.id;
-    await axios.delete(`http://localhost:8081/api/policy/delete?id=${policyId}`, {
+    await axios.delete(`http://localhost:8082/api/policy/delete?id=${policyId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('authToken')}`,
       },

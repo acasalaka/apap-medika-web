@@ -153,7 +153,7 @@ const getInsuranceLimit = computed(() => {
 const fetchCompanies = async () => {
   loading.value = true;
   try {
-    const response = await fetch(`http://localhost:8081/api/company/all`, {
+    const response = await fetch(`http://localhost:8082/api/company/all`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -183,7 +183,7 @@ const fetchCompanies = async () => {
 const fetchCoverages = async (companyId: string) => {
   loading.value = true;
   try {
-    const response = await fetch(`http://localhost:8081/api/company/get_coverages?id=${companyId}`, {
+    const response = await fetch(`http://localhost:8082/api/company/get_coverages?id=${companyId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -237,7 +237,7 @@ const submitForm = async () => {
   if (selectedPatient.value && selectedCompany.value && expiryDate.value) {
     loading.value = true;
     try {
-      const response = await axios.post('http://localhost:8081/api/policy/create', {
+      const response = await axios.post('http://localhost:8082/api/policy/create', {
         patientId: selectedPatient.value,
         companyId: selectedCompany.value,
         expiryDate: expiryDate.value,
