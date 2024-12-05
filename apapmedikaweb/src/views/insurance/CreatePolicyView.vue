@@ -87,8 +87,10 @@ const fetchPatients = async () => {
       credentials: 'include',
     });
 
+    const data = await response.json();
+
     if (response.status === 200) {
-      patients.value = response.data.data.map((patient: any) => ({
+      patients.value = data.data.map((patient: any) => ({
         id: patient.id,
         name: patient.name,
         nik: patient.nik,
@@ -115,11 +117,12 @@ const fetchPatientDetails = async (patientId: string) => {
       },
       credentials: 'include',
     });
+    const data = await response.json();
+
     if (response.status === 200) {
-      const data = response.data.data;
       // Format birthDate before setting it
-      data.birthDate = formatDate(data.birthDate);
-      patientDetails.value = data;
+      data.data.birthDate = formatDate(data.data.birthDate);
+      patientDetails.value = data.data;
       errorMessage.value = null; // Reset error message
     }
   } catch (error) {
@@ -159,8 +162,10 @@ const fetchCompanies = async () => {
       credentials: 'include',
     });
 
+    const data = await response.json();
+
     if (response.status === 200) {
-      companies.value = response.data.data.map((company: any) => ({
+      companies.value = data.data.map((company: any) => ({
         id: company.id,
         name: company.name,
       }));
@@ -186,8 +191,9 @@ const fetchCoverages = async (companyId: string) => {
       },
       credentials: 'include',
     });
+    const data = await response.json();
     if (response.status === 200) {
-      coverages.value = response.data.data;
+      coverages.value = data.data;
       // Initialize DataTable after data is fetched
       setTimeout(() => {
         const table = new DataTable('#coverageTable'); // Initialize DataTable

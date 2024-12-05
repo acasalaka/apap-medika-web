@@ -49,8 +49,9 @@ const fetchPolicyDetails = async () => {
       credentials: 'include',
     })
 
-    policy.value = response.data.data;
-    expiryDate.value = response.data.data.expiryDate; // Set default expiryDate value from policy
+    const data = await response.json();
+    policy.value = data.data;
+    expiryDate.value = data.data.expiryDate; // Set default expiryDate value from policy
 
     // Fetch the company ID and call the get_coverages API
     const companyId = policy.value.companyId;
@@ -100,7 +101,8 @@ const fetchCompanyCoverages = async (companyId: string) => {
       },
       credentials: 'include',
     })
-    const coveragesData = response.data.data;
+    const data = await response.json();
+    const coveragesData = data.data;
 
     // Assign the coverages data to the policy
     policy.value.coverages = coveragesData.map(coverage => ({
@@ -123,7 +125,8 @@ const fetchUsedCoverages = async (policyId: string) => {
       },
       credentials: 'include',
     })
-    const usedCoverageIdsData = response.data.data;
+    const data = await response.json();
+    const usedCoverageIdsData = data.data;
 
     // Populate the usedCoverageIds set with the IDs of coverages that have been used
     usedCoverageIds.value = new Set(usedCoverageIdsData);
@@ -178,8 +181,17 @@ const updateExpiryDate = async () => {
 // Cancel the policy
 const cancelPolicy = async () => {
   try {
+    const authToken = localStorage.getItem('authToken');
     const policyId = route.params.id;
-    await axios.put(`http://localhost:8081/api/policy/cancel?id=${policyId}`);
+    const response = await axios.put(
+      `http://localhost:8081/api/policy/cancel?id=${policyId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
     alert('Policy cancelled successfully!');
     window.location.reload()
   } catch (error) {
@@ -192,7 +204,11 @@ const cancelPolicy = async () => {
 const deletePolicy = async () => {
   try {
     const policyId = route.params.id;
-    await axios.delete(`http://localhost:8081/api/policy/delete?id=${policyId}`);
+    await axios.delete(`http://localhost:8081/api/policy/delete?id=${policyId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      },
+    });
     alert('Policy deleted successfully!');
     router.push('/insurance'); // Redirect to policy list page
   } catch (error) {
