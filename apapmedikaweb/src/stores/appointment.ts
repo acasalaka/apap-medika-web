@@ -273,35 +273,43 @@ export const useAppointmentStore = defineStore('appointment', {
       }
     },
 
-    async deleteAppointment(id: string): Promise<void> {
-      this.loading = true;
-      this.error = null;
+      async deleteAppointment(id: string): Promise<void> {
+        this.loading = true;
+        this.error = null;
 
-      try {
-        const response: Response = await fetch(
-          `http://localhost:8081/api/appointment/${id}/delete`,
-          {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json' },
-              'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-          }
-        );
+        try {
+          const authToken = localStorage.getItem('authToken');  // Menyimpan token ke dalam variabel authToken
+          console.log(authToken);  // Cek token yang disimpan
 
-        if (response.ok) {
-          this.appointments = this.appointments.filter(
-            (appointment: AppointmentInterface) => appointment.id !== id
+          const response: Response = await fetch(
+            `http://localhost:8081/api/appointment/${id}/delete`,
+            {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`,  // Gunakan authToken yang sudah disimpan
+              },
+            }
           );
 
-          await router.push("/appointment");
-          useToast().success("Sukses menghapus appointment");
+          if (response.ok) {
+            this.appointments = this.appointments.filter(
+              (appointment: AppointmentInterface) => appointment.id !== id
+            );
+
+            await router.push("/appointment");
+            useToast().success("Sukses menghapus appointment");
+          } else {
+            // Tangani jika response bukan OK
+            this.error = "Gagal menghapus appointment, server error.";
+            useToast().error(this.error);
+          }
+        } catch (err) {
+          this.error = `Gagal menghapus appointment ${(err as Error).message}`;
+          useToast().error(this.error);
+        } finally {
+          this.loading = false;
         }
-      } catch (err) {
-        this.error = `Gagal menghapus appointment ${(err as Error).message}`;
-        useToast().error(this.error)
-      } finally {
-        this.loading = false;
       }
-    }
   }
 });
