@@ -4,6 +4,11 @@ import CreateAppointmentView from "@/views/CreateAppointmentView.vue";
 import DetailAppointmentView from "@/views/DetailAppointmentView.vue";
 import UpdateStatusView from "@/views/UpdateStatusView.vue";
 import AppointmentView from "@/views/AppointmentView.vue";
+import ReservationView from '@/views/ReservationView.vue';
+import DetailReservationView from '@/views/DetailReservationView.vue';
+import BillView from '@/views/BillView.vue';
+import DetailBillView from '@/views/DetailBillView.vue';
+import CreateReservationView from '@/views/CreateReservationView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +37,31 @@ const router = createRouter({
       path: '/appointment/:id/edit',
       name: 'ubah status appointment',
       component: UpdateStatusView,
+    },
+    {
+      path: '/reservation',
+      name: 'reservation',
+      component: ReservationView,
+    },
+    {
+      path: '/reservation/:id',
+      name: 'detail reservation',
+      component: DetailReservationView,
+    },
+    {
+      path: '/bill',
+      name: 'bill',
+      component: BillView,
+    },
+    {
+      path: '/bill/:id',
+      name : 'detail bill',
+      component: DetailBillView,
+    },
+    {
+      path:'/reservation/add',
+      name: 'tambah reservation',
+      component: CreateReservationView,
     }
   ],
 })
