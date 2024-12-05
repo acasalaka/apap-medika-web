@@ -8,15 +8,17 @@ import CreateAppointmentView from '@/views/appointment/CreateAppointmentView.vue
 import DetailAppointmentView from '@/views/appointment/DetailAppointmentView.vue';
 import UpdateStatusView from '@/views/appointment/UpdateStatusView.vue';
 import AppointmentView from '@/views/appointment/AppointmentView.vue';
-import LoginView from '@/views/LoginView.vue';
-import HomeNotLoggedInView from '../views/HomeNotLoggedInView.vue';
-import RegisterView from '@/views/RegisterView.vue';
-import HomeView from '@/views/HomeView.vue';
-import UserDetailView from '@/views/UserDetailView.vue';
-import ViewAllPatient from '@/views/ViewAllPatient.vue';
-import PatientDetailsView from '@/views/PatientDetailsView.vue';
-import ReadAllPolicyView from '@/views/ReadAllPolicyView.vue';
+import LoginView from '@/views/authorization/LoginView.vue';
+import HomeNotLoggedInView from '../views/authorization/HomeNotLoggedInView.vue';
+import RegisterView from '@/views/authorization/RegisterView.vue';
+import HomeView from '@/views/authorization/HomeView.vue';
 import UpdateDiagnosisAndTreatmentView from "@/views/appointment/UpdateDiagnosisAndTreatmentView.vue";
+import UserDetailView from '@/views/insurance/UserDetailView.vue';
+import PatientDetailsView from '@/views/insurance/PatientDetailsView.vue';
+import ViewAllPatient from '@/views/insurance/ViewAllPatient.vue';
+import ReadAllPolicyView from '@/views/insurance/ReadAllPolicyView.vue';
+import CreatePolicyView from '@/views/insurance/CreatePolicyView.vue';
+import PolicyDetailView from '@/views/insurance/PolicyDetailView.vue';
 
 // Simulated authentication check (use a real auth system in production)
 function isLoggedIn(): boolean {
@@ -73,6 +75,19 @@ const router = createRouter({
       name: 'insurance',
       component: ReadAllPolicyView,
       meta: { requiresAuth: true }, // Protected route
+    },
+    {
+      path: '/policy/create',
+      name: 'CreatePolicy',
+      component: CreatePolicyView,
+      meta: { requiresAuth: true }, // Protected route
+    },
+    {
+      path: '/policy/details/:id',
+      name: 'PolicyDetails',
+      component: PolicyDetailView,
+      props: true,
+      meta: { requiresAuth: true }, // Public route      // Pass route params as props
     },
     {
       path: '/appointment',
