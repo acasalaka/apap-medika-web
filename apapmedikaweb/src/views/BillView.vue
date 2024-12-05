@@ -23,7 +23,7 @@ onMounted(async () => {
 
 const filteredBills = computed(() => {
   return billStore.bills.filter(
-    (bill) => bill.status === 'TREATMENT_IN_PROGRESS' || bill.status === 'UNPAID' || bill.status === 'PAID'
+    (bill) => bill.status === 'UNPAID' || bill.status === 'PAID'
   );
 });
 </script>
