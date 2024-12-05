@@ -96,6 +96,7 @@ const router = createRouter({
       path: '/appointment/:id/status',
       name: 'status-appointment',
       component: UpdateStatusView,
+      meta: { requiresAuth: true }, // Protected route
     },
     {
       path: '/appointment/:id/treatment',
@@ -133,7 +134,6 @@ const router = createRouter({
       component: CreateReservationView,
       meta: { requiresAuth: true }, // Protected route
     },
-
   ],
 });
 
